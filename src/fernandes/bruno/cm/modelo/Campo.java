@@ -1,5 +1,7 @@
 package fernandes.bruno.cm.modelo;
 
+import fernandes.bruno.cm.excecao.ExplosaoException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,5 +40,47 @@ public class Campo {
         } else {
             return false;
         }
+    }
+
+    public void alternarMarcacao() {
+        if(!aberto) {
+            marcado = !marcado;
+        }
+    }
+
+    public boolean abrir() {
+        if(!aberto && !marcado) {
+            aberto = true;
+
+            if(minado) {
+                throw new ExplosaoException();
+            }
+
+            if(vizinhancaSegura()) {
+                vizinhos.forEach(v -> v.abrir());
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    boolean vizinhancaSegura() {
+        return vizinhos.stream().noneMatch(v -> v.minado);
+    }
+
+    public void minar() {
+        if(!minado) {
+            minado = true;
+        }
+    }
+
+    public boolean isMarcado() {
+//        getType
+        return marcado;
+    }
+
+    public boolean isAberto() {
+        return aberto;
     }
 }
